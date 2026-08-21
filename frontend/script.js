@@ -307,12 +307,9 @@ async function analyzeResume() {
 
 
         if (!data.success) {
-
             throw new Error(
-                data.error ||
-                "Resume analysis failed."
+                data.error || "Unable to analyze the resume right now. Please try again later."
             );
-
         }
 
 
@@ -449,10 +446,10 @@ function displayResult(
 
                 <strong>
                     ${escapeHTML(
-                        String(
-                            analysis.ats_score ?? 0
-                        )
-                    )}
+        String(
+            analysis.ats_score ?? 0
+        )
+    )}
                 </strong>
 
                 <span>/100</span>
@@ -482,19 +479,19 @@ function displayResult(
         <div class="score-grid">
 
             ${scoreCard(
-                "ATS Score",
-                analysis.ats_score
-            )}
+        "ATS Score",
+        analysis.ats_score
+    )}
 
             ${scoreCard(
-                "Keyword Score",
-                analysis.keyword_score
-            )}
+        "Keyword Score",
+        analysis.keyword_score
+    )}
 
             ${scoreCard(
-                "Skills Match",
-                analysis.skills_match_score
-            )}
+        "Skills Match",
+        analysis.skills_match_score
+    )}
 
         </div>
 
@@ -506,8 +503,8 @@ function displayResult(
             </h3>
 
             ${renderTags(
-                technicalSkills
-            )}
+        technicalSkills
+    )}
 
         </div>
 
@@ -519,8 +516,8 @@ function displayResult(
             </h3>
 
             ${renderTags(
-                softSkills
-            )}
+        softSkills
+    )}
 
         </div>
 
@@ -532,8 +529,8 @@ function displayResult(
             </h3>
 
             ${renderList(
-                strengths
-            )}
+        strengths
+    )}
 
         </div>
 
@@ -545,8 +542,8 @@ function displayResult(
             </h3>
 
             ${renderList(
-                missingSkills
-            )}
+        missingSkills
+    )}
 
         </div>
 
@@ -558,9 +555,9 @@ function displayResult(
             </h3>
 
             ${renderTags(
-                missingKeywords,
-                "keyword-tag"
-            )}
+        missingKeywords,
+        "keyword-tag"
+    )}
 
         </div>
 
@@ -574,10 +571,10 @@ function displayResult(
             <div class="match-score">
 
                 ${escapeHTML(
-                    String(
-                        roleMatch.match_percentage ?? 0
-                    )
-                )}%
+        String(
+            roleMatch.match_percentage ?? 0
+        )
+    )}%
 
                 <span>Match</span>
 
@@ -585,17 +582,17 @@ function displayResult(
 
             <h4>
                 ${escapeHTML(
-                    roleMatch.role ||
-                    role ||
-                    "Target Role"
-                )}
+        roleMatch.role ||
+        role ||
+        "Target Role"
+    )}
             </h4>
 
             <p>
                 ${escapeHTML(
-                    roleMatch.explanation ||
-                    "No explanation provided."
-                )}
+        roleMatch.explanation ||
+        "No explanation provided."
+    )}
             </p>
 
         </div>
@@ -608,8 +605,8 @@ function displayResult(
             </h3>
 
             ${renderList(
-                suggestions
-            )}
+        suggestions
+    )}
 
         </div>
 
@@ -622,9 +619,9 @@ function displayResult(
 
             <p>
                 ${escapeHTML(
-                    analysis.overall_summary ||
-                    "No overall summary provided."
-                )}
+        analysis.overall_summary ||
+        "No overall summary provided."
+    )}
             </p>
 
         </div>
@@ -653,8 +650,8 @@ function scoreCard(
 
             <strong>
                 ${escapeHTML(
-                    String(score ?? 0)
-                )}
+        String(score ?? 0)
+    )}
             </strong>
 
             <small>
@@ -693,17 +690,17 @@ function renderTags(
         <div class="tags">
 
             ${items
-                .map(
-                    item => `
+            .map(
+                item => `
                         <span class="${className}">
                             ${escapeHTML(
-                                String(item)
-                            )}
+                    String(item)
+                )}
                         </span>
                     `
-                )
-                .join("")
-            }
+            )
+            .join("")
+        }
 
         </div>
 
@@ -734,17 +731,17 @@ function renderList(items) {
         <ul class="result-list">
 
             ${items
-                .map(
-                    item => `
+            .map(
+                item => `
                         <li>
                             ${escapeHTML(
-                                String(item)
-                            )}
+                    String(item)
+                )}
                         </li>
                     `
-                )
-                .join("")
-            }
+            )
+            .join("")
+        }
 
         </ul>
 
