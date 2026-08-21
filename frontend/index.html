@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+        <title>AI Resume Analyzer</title>
+
+        <link rel="stylesheet"
+            href="style.css">
+
+        <!-- PDF.js -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js">
+    </script>
+
+    </head>
+
+    <body>
+
+        <main class="app">
+
+            <!-- =========================================
+             HEADER
+        ========================================== -->
+
+            <header class="hero">
+
+                <div class="hero-icon">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h1>
+                        AI Resume Analyzer
+                    </h1>
+
+                    <p>
+                        Analyze your resume with AI and get
+                        actionable career insights.
+                    </p>
+
+                </div>
+
+            </header>
+
+            <!-- =========================================
+             UPLOAD CARD
+        ========================================== -->
+
+            <section class="upload-card">
+
+                <div class="upload-header">
+
+                    <h2>
+                        Analyze Your Resume
+                    </h2>
+
+                    <p>
+                        Upload your PDF resume and let AI
+                        review your skills, strengths and
+                        improvement areas.
+                    </p>
+
+                </div>
+
+                <!-- =====================================
+                 TARGET JOB ROLE
+            ====================================== -->
+
+                <div class="target-role">
+
+                    <label for="targetRole">
+                        Target Job Role
+                    </label>
+
+                    <select id="targetRole">
+
+                        <option value="Software Developer">
+                            Software Developer
+                        </option>
+
+                        <option value="Frontend Developer">
+                            Frontend Developer
+                        </option>
+
+                        <option value="React Developer">
+                            React Developer
+                        </option>
+
+                        <option value="Full Stack Developer">
+                            Full Stack Developer
+                        </option>
+
+                        <option value="Backend Developer">
+                            Backend Developer
+                        </option>
+
+                        <option value="Python Developer">
+                            Python Developer
+                        </option>
+
+                        <option value="Data Analyst">
+                            Data Analyst
+                        </option>
+
+                        <option value="Machine Learning Engineer">
+                            Machine Learning Engineer
+                        </option>
+
+                        <option value="AI Engineer">
+                            AI Engineer
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- =====================================
+                 DROP ZONE
+            ====================================== -->
+
+                <div
+                    class="upload-zone"
+                    id="uploadZone">
+
+                    <div class="upload-icon">
+                        📄
+                    </div>
+
+                    <h3>
+                        Drop your resume here
+                    </h3>
+
+                    <p>
+                        or click to browse your files
+                    </p>
+
+                    <span class="file-type">
+                        PDF only • Maximum 10MB
+                    </span>
+
+                    <!-- FILE INPUT -->
+
+                    <input
+                        type="file"
+                        id="resumeFile"
+                        name="resume"
+                        accept=".pdf,application/pdf"
+                        hidden>
+
+                    <!-- BROWSE BUTTON -->
+
+                    <button
+                        type="button"
+                        class="browse-btn"
+                        id="browseBtn"
+                        onclick="document.getElementById('resumeFile').click();">
+
+                        Choose PDF
+
+                    </button>
+
+                </div>
+
+                <!-- =====================================
+                 SELECTED FILE
+            ====================================== -->
+
+                <div
+                    class="selected-file"
+                    id="selectedFile"
+                    style="display: none;">
+
+                    <div class="file-info">
+
+                        <div class="file-icon">
+                            📄
+                        </div>
+
+                        <div>
+
+                            <strong id="fileName">
+                                Resume.pdf
+                            </strong>
+
+                            <span id="fileSize">
+                                0 KB
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="removeFile"
+                        class="remove-file">
+
+                        ✕
+
+                    </button>
+
+                </div>
+
+                <!-- =====================================
+                 ANALYZE BUTTON
+            ====================================== -->
+
+                <button
+                    type="button"
+                    id="analyzeBtn"
+                    class="analyze-btn"
+                    disabled>
+
+                    <span id="buttonText">
+                        Analyze Resume
+                    </span>
+
+                </button>
+
+                <!-- =====================================
+                 LOADING
+            ====================================== -->
+
+                <div
+                    class="loading"
+                    id="loading"
+                    style="display: none;">
+
+                    <div class="spinner"></div>
+
+                    <div>
+
+                        <strong id="loadingTitle">
+                            Analyzing your resume...
+                        </strong>
+
+                        <span id="loadingText">
+                            AI is reviewing your resume.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =========================================
+             ERROR
+        ========================================== -->
+
+            <div
+                id="error"
+                class="error-box"
+                style="display: none;">
+            </div>
+
+            <!-- =========================================
+             RESULTS
+        ========================================== -->
+
+            <section
+                id="resultsSection"
+                class="results-section"
+                style="display: none;">
+
+                <div class="results-header">
+
+                    <div>
+
+                        <span class="result-label">
+                            AI ANALYSIS
+                        </span>
+
+                        <h2>
+                            Resume Analysis
+                        </h2>
+
+                        <p>
+                            Here's what the AI found in your resume.
+                        </p>
+
+                    </div>
+
+                    <div class="success-badge">
+                        ✓ Analysis Complete
+                    </div>
+
+                </div>
+
+                <!-- RESULT CONTENT -->
+
+                <div
+                    id="result"
+                    class="result-content">
+                </div>
+
+                <!-- ANALYZE AGAIN -->
+
+                <button
+                    type="button"
+                    id="analyzeAgain"
+                    class="secondary-btn">
+
+                    Analyze Another Resume
+
+                </button>
+
+            </section>
+
+            <!-- =========================================
+             FOOTER
+        ========================================== -->
+
+            <footer>
+
+                <p>
+                    Built with ❤️ using FastAPI, Python & Gemini AI
+                </p>
+
+            </footer>
+
+        </main>
+
+        <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+
+        <script src="script.js"></script>
+
+    </body>
+
+</html>
