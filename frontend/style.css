@@ -1134,3 +1134,214 @@ footer {
     }
 
 }
+
+/* =========================================
+   FINAL RESULT LAYOUT FIX
+   ========================================= */
+
+/* Main ATS score highlight */
+.score-highlight {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    padding: 24px;
+
+    margin-bottom: 20px;
+
+    background: linear-gradient(
+        135deg,
+        #eef2ff 0%,
+        #f5f3ff 100%
+    );
+
+    border: 1px solid #c7d2fe;
+    border-radius: 14px;
+}
+
+/* ATS score circle */
+.score-highlight .score-circle {
+    width: 90px;
+    height: 90px;
+
+    flex: 0 0 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+    border: 6px solid #6366f1;
+}
+
+/* Score number */
+.score-highlight .score-circle span {
+    font-size: 26px;
+    font-weight: 800;
+    color: #4f46e5;
+    line-height: 1;
+}
+
+/* /100 */
+.score-highlight .score-circle small {
+    margin-top: 2px;
+    font-size: 10px;
+    color: #6b7280;
+}
+
+/* Score information */
+.score-highlight .score-info {
+    flex: 1;
+}
+
+.score-highlight .score-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #6366f1;
+}
+
+.score-highlight h3 {
+    margin: 5px 0 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.score-highlight p {
+    margin-top: 5px;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+
+/* =========================================
+   THREE METRIC CARDS
+   ========================================= */
+
+.score-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+.score-grid .score-item {
+    min-width: 0;
+
+    padding: 18px 12px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+}
+
+.score-grid .score-item span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 10px;
+
+    color: #6b7280;
+}
+
+.score-grid .score-item strong {
+    font-size: 22px;
+
+    color: #111827;
+}
+
+.score-grid .score-item small {
+    margin-left: 3px;
+
+    font-size: 9px;
+
+    color: #9ca3af;
+}
+
+
+/* =========================================
+   EXISTING CLASS SUPPORT
+   ========================================= */
+
+/* If your HTML still uses metrics-grid */
+.metrics-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .score-highlight {
+        padding: 20px;
+
+        gap: 16px;
+    }
+
+    .score-highlight .score-circle {
+        width: 75px;
+        height: 75px;
+        flex-basis: 75px;
+    }
+
+    .score-highlight .score-circle span {
+        font-size: 22px;
+    }
+
+    .score-grid,
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .score-highlight {
+        padding: 16px;
+    }
+
+    .score-highlight .score-circle {
+        width: 68px;
+        height: 68px;
+        flex-basis: 68px;
+
+        border-width: 5px;
+    }
+
+    .score-highlight .score-circle span {
+        font-size: 20px;
+    }
+
+    .score-highlight h3 {
+        font-size: 16px;
+    }
+
+    .score-highlight p {
+        font-size: 10px;
+    }
+
+    .score-grid .score-item {
+        padding: 15px 10px;
+    }
+}

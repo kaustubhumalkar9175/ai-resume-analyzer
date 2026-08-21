@@ -1,60 +1,24 @@
-// =========================================================
-// CONFIGURATION
-// =========================================================
+const API_URL =
+    "https://ai-resume-analyzer-api-71xn.onrender.com";
 
-// Local development
-const API_BASE_URL = "http://127.0.0.1:8000";
+const uploadZone = document.getElementById("uploadZone");
+const browseBtn = document.getElementById("browseBtn");
+const resumeFile = document.getElementById("resumeFile");
 
-// Later, after deployment, change this to:
-//
-// const API_BASE_URL = "https://your-api-domain.com";
+const selectedFile = document.getElementById("selectedFile");
+const fileName = document.getElementById("fileName");
+const fileSize = document.getElementById("fileSize");
 
+const removeFile = document.getElementById("removeFile");
 
-// =========================================================
-// ELEMENTS
-// =========================================================
+const analyzeBtn = document.getElementById("analyzeBtn");
+const buttonText = document.getElementById("buttonText");
 
-const uploadZone =
-    document.getElementById("uploadZone");
+const loading = document.getElementById("loading");
+const loadingTitle = document.getElementById("loadingTitle");
+const loadingText = document.getElementById("loadingText");
 
-const browseBtn =
-    document.getElementById("browseBtn");
-
-const resumeFile =
-    document.getElementById("resumeFile");
-
-const selectedFile =
-    document.getElementById("selectedFile");
-
-const fileName =
-    document.getElementById("fileName");
-
-const fileSize =
-    document.getElementById("fileSize");
-
-const removeFile =
-    document.getElementById("removeFile");
-
-const analyzeBtn =
-    document.getElementById("analyzeBtn");
-
-const analyzeAgain =
-    document.getElementById("analyzeAgain");
-
-const targetRole =
-    document.getElementById("targetRole");
-
-const loading =
-    document.getElementById("loading");
-
-const loadingTitle =
-    document.getElementById("loadingTitle");
-
-const loadingText =
-    document.getElementById("loadingText");
-
-const errorBox =
-    document.getElementById("error");
+const errorBox = document.getElementById("error");
 
 const resultsSection =
     document.getElementById("resultsSection");
@@ -62,104 +26,75 @@ const resultsSection =
 const result =
     document.getElementById("result");
 
-const buttonText =
-    document.getElementById("buttonText");
+const analyzeAgain =
+    document.getElementById("analyzeAgain");
 
-
-// =========================================================
-// STATE
-// =========================================================
+const targetRole =
+    document.getElementById("targetRole");
 
 let selectedResume = null;
 
-let isAnalyzing = false;
+
+// ============================================
+// FILE BROWSE
+// ============================================
+
+browseBtn.addEventListener("click", function (event) {
+
+    event.stopPropagation();
+
+    resumeFile.click();
+
+});
 
 
-// =========================================================
-// FILE SIZE
-// =========================================================
+// ============================================
+// CLICK UPLOAD ZONE
+// ============================================
 
-const MAX_FILE_SIZE =
-    10 * 1024 * 1024;
+uploadZone.addEventListener("click", function (event) {
 
-
-// =========================================================
-// BROWSE BUTTON
-// =========================================================
-
-browseBtn.addEventListener(
-    "click",
-    function (event) {
-
-        event.preventDefault();
-
-        resumeFile.click();
-
+    if (
+        event.target === browseBtn ||
+        browseBtn.contains(event.target)
+    ) {
+        return;
     }
-);
+
+    resumeFile.click();
+
+});
 
 
-// =========================================================
-// UPLOAD ZONE CLICK
-// =========================================================
-
-uploadZone.addEventListener(
-    "click",
-    function (event) {
-
-        if (
-            event.target === browseBtn
-        ) {
-            return;
-        }
-
-        resumeFile.click();
-
-    }
-);
-
-
-// =========================================================
+// ============================================
 // FILE SELECTED
-// =========================================================
+// ============================================
 
-resumeFile.addEventListener(
-    "change",
-    function () {
+resumeFile.addEventListener("change", function () {
 
-        const file =
-            resumeFile.files[0];
-
-        handleFile(file);
-
-    }
-);
-
-
-// =========================================================
-// HANDLE FILE
-// =========================================================
-
-function handleFile(file) {
-
-    hideError();
+    const file = resumeFile.files[0];
 
     if (!file) {
         return;
     }
 
+    handleFile(file);
 
-    // Validate type
+});
 
-    if (
-        file.type !== "application/pdf" &&
-        !file.name
-            .toLowerCase()
-            .endsWith(".pdf")
-    ) {
+
+// ============================================
+// HANDLE FILE
+// ============================================
+
+function handleFile(file) {
+
+    clearError();
+
+    if (file.type !== "application/pdf") {
 
         showError(
-            "Please select a PDF file."
+            "Please upload a valid PDF file."
         );
 
         resetFile();
@@ -168,14 +103,15 @@ function handleFile(file) {
     }
 
 
-    // Validate size
+    // 10 MB limit
 
-    if (
-        file.size > MAX_FILE_SIZE
-    ) {
+    const maxSize =
+        10 * 1024 * 1024;
+
+    if (file.size > maxSize) {
 
         showError(
-            "File is too large. Maximum size is 10 MB."
+            "PDF file must be smaller than 10MB."
         );
 
         resetFile();
@@ -189,7 +125,6 @@ function handleFile(file) {
 
     fileName.textContent =
         file.name;
-
 
     fileSize.textContent =
         formatFileSize(file.size);
@@ -209,23 +144,49 @@ function handleFile(file) {
 }
 
 
-// =========================================================
-// REMOVE FILE
-// =========================================================
+// ============================================
+// FORMAT FILE SIZE
+// ============================================
 
-removeFile.addEventListener(
-    "click",
-    function () {
+function formatFileSize(bytes) {
 
-        resetFile();
+    if (bytes < 1024) {
+
+        return bytes + " B";
 
     }
-);
+
+    if (bytes < 1024 * 1024) {
+
+        return (
+            (bytes / 1024).toFixed(1)
+            + " KB"
+        );
+
+    }
+
+    return (
+        (bytes / (1024 * 1024)).toFixed(2)
+        + " MB"
+    );
+
+}
 
 
-// =========================================================
+// ============================================
+// REMOVE FILE
+// ============================================
+
+removeFile.addEventListener("click", function () {
+
+    resetFile();
+
+});
+
+
+// ============================================
 // RESET FILE
-// =========================================================
+// ============================================
 
 function resetFile() {
 
@@ -245,40 +206,9 @@ function resetFile() {
 }
 
 
-// =========================================================
-// FORMAT FILE SIZE
-// =========================================================
-
-function formatFileSize(bytes) {
-
-    if (bytes < 1024) {
-
-        return bytes + " B";
-
-    }
-
-    if (bytes < 1024 * 1024) {
-
-        return (
-            (bytes / 1024)
-                .toFixed(1)
-            + " KB"
-        );
-
-    }
-
-    return (
-        (bytes / (1024 * 1024))
-            .toFixed(2)
-        + " MB"
-    );
-
-}
-
-
-// =========================================================
-// ANALYZE BUTTON
-// =========================================================
+// ============================================
+// ANALYZE RESUME
+// ============================================
 
 analyzeBtn.addEventListener(
     "click",
@@ -286,16 +216,7 @@ analyzeBtn.addEventListener(
 );
 
 
-// =========================================================
-// ANALYZE RESUME
-// =========================================================
-
 async function analyzeResume() {
-
-    if (isAnalyzing) {
-        return;
-    }
-
 
     if (!selectedResume) {
 
@@ -307,34 +228,30 @@ async function analyzeResume() {
     }
 
 
-    hideError();
+    clearError();
+
+    resultsSection.style.display =
+        "none";
 
 
-    isAnalyzing = true;
+    // Loading state
 
-    analyzeBtn.disabled = true;
+    analyzeBtn.disabled =
+        true;
 
-    analyzeAgain.disabled = true;
+    buttonText.textContent =
+        "Analyzing...";
 
 
     loading.style.display =
         "flex";
 
 
-    resultsSection.style.display =
-        "none";
-
-
-    buttonText.textContent =
-        "Analyzing...";
-
-
     loadingTitle.textContent =
         "Analyzing your resume...";
 
-
     loadingText.textContent =
-        "AI is reviewing your skills and experience.";
+        "Uploading your resume to the AI analyzer.";
 
 
     try {
@@ -355,9 +272,13 @@ async function analyzeResume() {
         );
 
 
+        loadingText.textContent =
+            "AI is reviewing your resume.";
+
+
         const response =
             await fetch(
-                `${API_BASE_URL}/analyze`,
+                `${API_URL}/analyze`,
                 {
                     method: "POST",
                     body: formData
@@ -365,28 +286,19 @@ async function analyzeResume() {
             );
 
 
-        let data;
+        const data =
+            await response.json();
 
 
-        try {
-
-            data =
-                await response.json();
-
-        }
-        catch {
-
-            throw new Error(
-                "Server returned an invalid response."
-            );
-
-        }
+        console.log(
+            "API Response:",
+            data
+        );
 
 
         if (!response.ok) {
 
             throw new Error(
-                data?.detail ||
                 data?.error ||
                 `Server error (${response.status})`
             );
@@ -404,6 +316,13 @@ async function analyzeResume() {
         }
 
 
+        loadingTitle.textContent =
+            "Analysis complete!";
+
+        loadingText.textContent =
+            "Preparing your resume insights.";
+
+
         displayResult(
             data.analysis,
             data.target_role
@@ -415,35 +334,33 @@ async function analyzeResume() {
 
 
         resultsSection.scrollIntoView({
-            behavior: "smooth"
+            behavior: "smooth",
+            block: "start"
         });
+
 
     }
     catch (error) {
 
         console.error(
-            "Analysis error:",
+            "Analysis Error:",
             error
         );
 
 
         showError(
-            getFriendlyError(error)
+            error.message ||
+            "Something went wrong while analyzing your resume."
         );
 
     }
     finally {
 
-        isAnalyzing = false;
+        loading.style.display =
+            "none";
 
         analyzeBtn.disabled =
             false;
-
-        analyzeAgain.disabled =
-            false;
-
-        loading.style.display =
-            "none";
 
         buttonText.textContent =
             "Analyze Resume";
@@ -453,87 +370,98 @@ async function analyzeResume() {
 }
 
 
-// =========================================================
-// FRIENDLY ERROR
-// =========================================================
-
-function getFriendlyError(error) {
-
-    const message =
-        error?.message || "";
-
-
-    if (
-        message.includes(
-            "Failed to fetch"
-        )
-    ) {
-
-        return (
-            "Unable to connect to the AI server. " +
-            "Please make sure the FastAPI backend is running."
-        );
-
-    }
-
-
-    if (
-        message.includes("429")
-    ) {
-
-        return (
-            "The AI service is temporarily busy. " +
-            "Please wait a moment and try again."
-        );
-
-    }
-
-
-    return message ||
-        "Something went wrong. Please try again.";
-
-}
-
-
-// =========================================================
+// ============================================
 // DISPLAY RESULT
-// =========================================================
+// ============================================
 
 function displayResult(
     analysis,
     role
 ) {
 
-    result.innerHTML = "";
+    if (!analysis) {
 
-
-    // ATS SCORE
-
-    const score =
-        Number(
-            analysis.ats_score || 0
+        showError(
+            "No analysis data was returned."
         );
 
+        return;
+    }
 
-    result.innerHTML += `
 
-        <div class="score-card">
+    const technicalSkills =
+        Array.isArray(
+            analysis.technical_skills
+        )
+            ? analysis.technical_skills
+            : [];
+
+
+    const softSkills =
+        Array.isArray(
+            analysis.soft_skills
+        )
+            ? analysis.soft_skills
+            : [];
+
+
+    const strengths =
+        Array.isArray(
+            analysis.strengths
+        )
+            ? analysis.strengths
+            : [];
+
+
+    const missingSkills =
+        Array.isArray(
+            analysis.missing_skills
+        )
+            ? analysis.missing_skills
+            : [];
+
+
+    const missingKeywords =
+        Array.isArray(
+            analysis.missing_keywords
+        )
+            ? analysis.missing_keywords
+            : [];
+
+
+    const suggestions =
+        Array.isArray(
+            analysis.suggestions
+        )
+            ? analysis.suggestions
+            : [];
+
+
+    const roleMatch =
+        analysis.job_role_match || {};
+
+
+    result.innerHTML = `
+
+        <div class="score-highlight">
 
             <div class="score-circle">
 
                 <strong>
-                    ${score}
+                    ${escapeHTML(
+                        String(
+                            analysis.ats_score ?? 0
+                        )
+                    )}
                 </strong>
 
-                <span>
-                    /100
-                </span>
+                <span>/100</span>
 
             </div>
 
-            <div>
+            <div class="score-info">
 
-                <span class="result-label">
+                <span class="score-label">
                     ATS SCORE
                 </span>
 
@@ -550,134 +478,141 @@ function displayResult(
 
         </div>
 
-    `;
-
-
-    // SCORE CARDS
-
-    result.innerHTML += `
 
         <div class="score-grid">
 
-            ${scoreBox(
+            ${scoreCard(
                 "ATS Score",
                 analysis.ats_score
             )}
 
-            ${scoreBox(
+            ${scoreCard(
                 "Keyword Score",
                 analysis.keyword_score
             )}
 
-            ${scoreBox(
+            ${scoreCard(
                 "Skills Match",
                 analysis.skills_match_score
             )}
 
         </div>
 
-    `;
+
+        <div class="result-card">
+
+            <h3>
+                🛠 Technical Skills
+            </h3>
+
+            ${renderTags(
+                technicalSkills
+            )}
+
+        </div>
 
 
-    // TECHNICAL SKILLS
+        <div class="result-card">
 
-    result.innerHTML +=
-        createTagSection(
-            "🛠️",
-            "Technical Skills",
-            analysis.technical_skills
-        );
+            <h3>
+                🧠 Soft Skills
+            </h3>
 
+            ${renderTags(
+                softSkills
+            )}
 
-    // SOFT SKILLS
-
-    result.innerHTML +=
-        createTagSection(
-            "🤝",
-            "Soft Skills",
-            analysis.soft_skills
-        );
+        </div>
 
 
-    // STRENGTHS
+        <div class="result-card">
 
-    result.innerHTML +=
-        createListSection(
-            "💪",
-            "Strengths",
-            analysis.strengths
-        );
+            <h3>
+                💪 Strengths
+            </h3>
 
+            ${renderList(
+                strengths
+            )}
 
-    // MISSING SKILLS
-
-    result.innerHTML +=
-        createWarningSection(
-            "⚠️",
-            "Missing Skills",
-            analysis.missing_skills
-        );
+        </div>
 
 
-    // MISSING KEYWORDS
+        <div class="result-card warning-card">
 
-    result.innerHTML +=
-        createTagSection(
-            "🔎",
-            "Missing ATS Keywords",
-            analysis.missing_keywords,
-            "warning"
-        );
+            <h3>
+                ⚠️ Missing Skills
+            </h3>
 
+            ${renderList(
+                missingSkills
+            )}
 
-    // JOB MATCH
-
-    const jobMatch =
-        analysis.job_role_match;
+        </div>
 
 
-    result.innerHTML += `
+        <div class="result-card">
 
-        <div class="job-match">
+            <h3>
+                🔎 Missing ATS Keywords
+            </h3>
+
+            ${renderTags(
+                missingKeywords,
+                "keyword-tag"
+            )}
+
+        </div>
+
+
+        <div class="result-card match-card">
 
             <h3>
                 🎯 Job Role Match
             </h3>
 
             <div class="match-score">
-                ${jobMatch.match_percentage}%
+
+                ${escapeHTML(
+                    String(
+                        roleMatch.match_percentage ?? 0
+                    )
+                )}%
+
+                <span>Match</span>
+
             </div>
 
-            <strong>
+            <h4>
                 ${escapeHTML(
-                    jobMatch.role || role
+                    roleMatch.role ||
+                    role ||
+                    "Target Role"
                 )}
-            </strong>
+            </h4>
 
             <p>
                 ${escapeHTML(
-                    jobMatch.explanation || ""
+                    roleMatch.explanation ||
+                    "No explanation provided."
                 )}
             </p>
 
         </div>
 
-    `;
 
+        <div class="result-card">
 
-    // SUGGESTIONS
+            <h3>
+                💡 Suggestions
+            </h3>
 
-    result.innerHTML +=
-        createListSection(
-            "💡",
-            "Suggestions",
-            analysis.suggestions
-        );
+            ${renderList(
+                suggestions
+            )}
 
+        </div>
 
-    // OVERALL
-
-    result.innerHTML += `
 
         <div class="overall-card">
 
@@ -687,7 +622,8 @@ function displayResult(
 
             <p>
                 ${escapeHTML(
-                    analysis.overall_summary || ""
+                    analysis.overall_summary ||
+                    "No overall summary provided."
                 )}
             </p>
 
@@ -698,25 +634,27 @@ function displayResult(
 }
 
 
-// =========================================================
-// SCORE BOX
-// =========================================================
+// ============================================
+// SCORE CARD
+// ============================================
 
-function scoreBox(
+function scoreCard(
     title,
-    value
+    score
 ) {
 
     return `
 
-        <div class="score-box">
+        <div class="score-card">
 
             <span>
                 ${escapeHTML(title)}
             </span>
 
             <strong>
-                ${Number(value) || 0}
+                ${escapeHTML(
+                    String(score ?? 0)
+                )}
             </strong>
 
             <small>
@@ -730,51 +668,42 @@ function scoreBox(
 }
 
 
-// =========================================================
-// TAG SECTION
-// =========================================================
+// ============================================
+// RENDER TAGS
+// ============================================
 
-function createTagSection(
-    icon,
-    title,
+function renderTags(
     items,
-    type = ""
+    className = "skill-tag"
 ) {
 
-    if (
-        !Array.isArray(items) ||
-        items.length === 0
-    ) {
+    if (!items.length) {
 
-        return "";
+        return `
+            <p class="empty-result">
+                No items found.
+            </p>
+        `;
 
     }
 
 
-    const tags =
-        items
-            .map(
-                item =>
-                    `
-                    <span class="skill-tag ${type}">
-                        ${escapeHTML(item)}
-                    </span>
-                    `
-            )
-            .join("");
-
-
     return `
 
-        <div class="analysis-card">
+        <div class="tags">
 
-            <h3>
-                ${icon} ${title}
-            </h3>
-
-            <div class="skill-tags">
-                ${tags}
-            </div>
+            ${items
+                .map(
+                    item => `
+                        <span class="${className}">
+                            ${escapeHTML(
+                                String(item)
+                            )}
+                        </span>
+                    `
+                )
+                .join("")
+            }
 
         </div>
 
@@ -783,128 +712,50 @@ function createTagSection(
 }
 
 
-// =========================================================
-// LIST SECTION
-// =========================================================
+// ============================================
+// RENDER LIST
+// ============================================
 
-function createListSection(
-    icon,
-    title,
-    items
-) {
+function renderList(items) {
 
-    if (
-        !Array.isArray(items) ||
-        items.length === 0
-    ) {
+    if (!items.length) {
 
-        return "";
-
-    }
-
-
-    const list =
-        items
-            .map(
-                item =>
-                    `
-                    <li>
-                        ${escapeHTML(item)}
-                    </li>
-                    `
-            )
-            .join("");
-
-
-    return `
-
-        <div class="analysis-card">
-
-            <h3>
-                ${icon} ${title}
-            </h3>
-
-            <ul>
-                ${list}
-            </ul>
-
-        </div>
-
-    `;
-
-}
-
-
-// =========================================================
-// WARNING SECTION
-// =========================================================
-
-function createWarningSection(
-    icon,
-    title,
-    items
-) {
-
-    if (
-        !Array.isArray(items) ||
-        items.length === 0
-    ) {
-
-        return "";
+        return `
+            <p class="empty-result">
+                No items found.
+            </p>
+        `;
 
     }
 
 
     return `
 
-        <div class="analysis-card warning-card">
+        <ul class="result-list">
 
-            <h3>
-                ${icon} ${title}
-            </h3>
+            ${items
+                .map(
+                    item => `
+                        <li>
+                            ${escapeHTML(
+                                String(item)
+                            )}
+                        </li>
+                    `
+                )
+                .join("")
+            }
 
-            <ul>
-
-                ${items
-                    .map(
-                        item =>
-                            `
-                            <li>
-                                ${escapeHTML(item)}
-                            </li>
-                            `
-                    )
-                    .join("")}
-
-            </ul>
-
-        </div>
+        </ul>
 
     `;
 
 }
 
 
-// =========================================================
-// ESCAPE HTML
-// =========================================================
-
-function escapeHTML(value) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent =
-        String(value ?? "");
-
-    return div.innerHTML;
-
-}
-
-
-// =========================================================
+// ============================================
 // ERROR
-// =========================================================
+// ============================================
 
 function showError(message) {
 
@@ -914,10 +765,15 @@ function showError(message) {
     errorBox.style.display =
         "block";
 
+    errorBox.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
 }
 
 
-function hideError() {
+function clearError() {
 
     errorBox.textContent =
         "";
@@ -928,9 +784,26 @@ function hideError() {
 }
 
 
-// =========================================================
-// ANALYZE ANOTHER
-// =========================================================
+// ============================================
+// ESCAPE HTML
+// ============================================
+
+function escapeHTML(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value ?? "";
+
+    return div.innerHTML;
+
+}
+
+
+// ============================================
+// ANALYZE ANOTHER RESUME
+// ============================================
 
 analyzeAgain.addEventListener(
     "click",
@@ -941,63 +814,10 @@ analyzeAgain.addEventListener(
 
         resetFile();
 
-        hideError();
-
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
-
-    }
-);
-
-
-// =========================================================
-// DRAG & DROP
-// =========================================================
-
-uploadZone.addEventListener(
-    "dragover",
-    function (event) {
-
-        event.preventDefault();
-
-        uploadZone.classList.add(
-            "dragging"
-        );
-
-    }
-);
-
-
-uploadZone.addEventListener(
-    "dragleave",
-    function () {
-
-        uploadZone.classList.remove(
-            "dragging"
-        );
-
-    }
-);
-
-
-uploadZone.addEventListener(
-    "drop",
-    function (event) {
-
-        event.preventDefault();
-
-        uploadZone.classList.remove(
-            "dragging"
-        );
-
-
-        const file =
-            event.dataTransfer.files[0];
-
-
-        handleFile(file);
 
     }
 );
